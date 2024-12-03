@@ -7,9 +7,9 @@ on:
   pull_request:
     branches:
       - '*'
-  # workflow_dispatch:
-  #   permissions:
-  #     runs: write
+  workflow_dispatch:
+    permissions:
+      runs: write
 
 jobs:
   build:
