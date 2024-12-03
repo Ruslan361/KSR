@@ -30,54 +30,35 @@ jobs:
             cxxflags: -std=c++17
           - os: windows-latest
             extension: dll
-            compiler: msvc
+            compiler: msvc # for consistency, although it's not strictly necessary here
             os_name: windows
             cxxflags: /std:c++17
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Remove libs directory (if exists)
-        if: runner.os == 'Windows'
-        run: Remove-Item -Path libs/${{ matrix.os_name }} -Recurse -Force -ErrorAction SilentlyContinue
-
-      - name: Remove libs directory (if exists)
-        if: runner.os != 'Windows'
-        run: rm -rf libs/${{ matrix.os_name }}
+        with:
+          fetch-depth: 0
 
       - name: Create libs directory
         run: mkdir -p libs/${{ matrix.os_name }}
-        working-directory: ./
 
       - name: Set up MSVC environment
         if: matrix.os == 'windows-latest'
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Compile shared libraries on Windows
-        if: runner.os == 'Windows'
+      - name: Compile shared libraries
+        shell: bash # For cross-platform consistency
         run: |
-          cl /LD /Fe:libs/${{ matrix.os_name }}/ksr11.${{ matrix.extension }} ${{ matrix.cxxflags }} ksr11.cpp
-      - name: Compile shared libraries on Linux
-        if: runner.os == 'Linux'
-        run: |
-          ${{ matrix.compiler }} -shared -fPIC ${{ matrix.cxxflags }} -o libs/${{ matrix.os_name }}/ksr11.${{ matrix.extension }} ksr11.cpp
+          if [[ ${{ matrix.os }} == 'windows-latest' ]]; then
+            cl /LD /Fe:libs/${{ matrix.os_name }}/ksr11.${{ matrix.extension }} ${{ matrix.cxxflags }} ksr11.cpp
+          else
+            ${{ matrix.compiler }} -shared -fPIC ${{ matrix.cxxflags }} -o libs/${{ matrix.os_name }}/ksr11.${{ matrix.extension }} ksr11.cpp
+          fi
 
-      - name: Compile shared libraries on macOS
-        if: runner.os == 'macOS'
-        run: |
-          ${{ matrix.compiler }} -shared -fPIC ${{ matrix.cxxflags }} -o libs/${{ matrix.os_name }}/ksr11.${{ matrix.extension }} ksr11.cpp
-      - name: Pull latest changes
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git stash
-          git pull origin ${{ github.ref_name }}
-          git stash pop || true
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v9
         with:
           add: 'libs/${{ matrix.os_name }}'
-          message: 'Build: Updated shared libraries for ${{ matrix.os_name }}' 
+          message: 'Build: Updated shared libraries for ${{ matrix.os_name }}'
           author_name: 'GitHub Actions Bot'
           author_email: 'actions@github.com'
-          github_token: ${{ secrets.GITHUB_TOKEN }}
