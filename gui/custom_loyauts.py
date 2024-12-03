@@ -278,9 +278,9 @@ class ABInput(QVBoxLayout):
 
     def createABInput(self):
         layout2 = QHBoxLayout()
-        self.AInput = FloatNumberInput("a")
+        self.AInput = FloatNumberInput("K")
         layout2.addLayout(self.AInput)
-        self.BInput = FloatNumberInput("b")
+        self.BInput = FloatNumberInput("L")
         layout2.addLayout(self.BInput)
         return layout2
     

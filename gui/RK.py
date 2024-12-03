@@ -149,9 +149,7 @@ class l1_2:
             raise Exception("Something went wrong")
         return self.getResult()
     def getResult(self):
-        CSVReader = CSVReaderPandas('output_test.csv')
-        headers, values = CSVReader.readAsNumpy()
-        return headers, values
+        pass
 
 
 

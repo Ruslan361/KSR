@@ -1,5 +1,5 @@
-from test_task import *
-from main_1_task import *
+#from test_task import *
+#from main_1_task import *
 from main_2_task import *
 from PySide6.QtWidgets import QMainWindow, QTabWidget
 
@@ -24,10 +24,10 @@ class MainWindow(QMainWindow):
 
     def create_tabs(self):
         # Вкладка 1
-        tab1 = TabTestTask()
+        #tab1 = TabTestTask()
 
         # Вкладка 2
-        tab2 = TabMainTask1()
+        #tab2 = TabMainTask1()
 
         tab3 = TabMainTask2()
         #layout2 = QVBoxLayout()

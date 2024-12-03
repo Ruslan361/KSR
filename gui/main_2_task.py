@@ -23,22 +23,22 @@ class MainTask2Plotter:
         self.graph_layout.clear()
         selected_graph = self.graph_combobox.currentText()
 
-        if selected_graph == "x - u(x)":
-            self.graph_layout.plot(x, u, label="u(x)")
-            self.graph_layout.set_ylabel('u') 
+        if selected_graph == "x - v(x)":
+            self.graph_layout.plot(x, u, label="v(x)")
+            self.graph_layout.set_ylabel('v') 
             self.graph_layout.set_xlabel("x")
-        elif selected_graph == "x - u'(x)":
-            self.graph_layout.plot(x, du, label="u'(x)")
+        elif selected_graph == "x - v'(x)":
+            self.graph_layout.plot(x, du, label="v'(x)")
             self.graph_layout.set_xlabel("x")
             self.graph_layout.set_ylabel('$\\dot{x}$')
-        elif selected_graph == "u - u'(x)":
-            self.graph_layout.plot(u, du, label="u`(u)")
-            self.graph_layout.set_ylabel('$\\dot{u}$')
-            self.graph_layout.set_xlabel("u")
-        elif selected_graph == "u`-u":
+        elif selected_graph == "v - v'(x)":
+            self.graph_layout.plot(u, du, label="v`(u)")
+            self.graph_layout.set_ylabel('$\\dot{v}$')
+            self.graph_layout.set_xlabel('v')
+        elif selected_graph == "v`-v":
             self.graph_layout.plot(du, u, label="u(u`)")
-            self.graph_layout.set_xlabel('$\\dot{u}$')
-            self.graph_layout.set_ylabel("u")
+            self.graph_layout.set_xlabel('$\\dot{v}$')
+            self.graph_layout.set_ylabel('v')
 
         self.graph_layout.set_title(f"График: {selected_graph}")
         
@@ -141,10 +141,10 @@ class TabMainTask2(QWidget):
         self.to_be_control_local_error = False # Флаг, указывающий, нужно ли контролировать локальную погрешность
 
         # UI элементы
-        testTaskLayout = LatexRendererLayout()
-        texTask1 = r"$\frac{d^2 u}{dx^2} + a\frac{du}{dx} + b \sin(u) = 0$"
-        testTaskLayout.render(texTask1)
-        self.mainLayout.addLayout(testTaskLayout, 1)
+        #testTaskLayout = LatexRendererLayout()
+        #texTask1 = r"$\frac{d^2 u}{dx^2} + a\frac{du}{dx} + b \sin(u) = 0$"
+        #testTaskLayout.render(texTask1)
+        #self.mainLayout.addLayout(testTaskLayout, 1)
 
         self.abinput = ABInput()
         self.mainLayout.addLayout(self.abinput)
@@ -171,7 +171,7 @@ class TabMainTask2(QWidget):
 
         # ComboBox для выбора графика
         self.graphComboBox = QComboBox()
-        self.graphComboBox.addItems(["x - u(x)", "x - u'(x)", "u - u'(x)", "u`-u"])
+        self.graphComboBox.addItems(["x - v(x)", "x - v'(x)", "v - v'(x)", "v`-v"])
         self.graphComboBox.currentIndexChanged.connect(self.refreshPlot)  # Обновление при выборе
         self.mainLayout.addWidget(self.graphComboBox)
 
@@ -266,7 +266,7 @@ class TabMainTask2(QWidget):
 
     def refreshPlot(self):
         if self.df is not None:
-            self.plotter.plot(self.getColumnValues(self.df, 'x'), self.getColumnValues(self.df, 'u'), self.getColumnValues(self.df, 'u\''))
+            self.plotter.plot(self.getColumnValues(self.df, 'x'), self.getColumnValues(self.df, 'v'), self.getColumnValues(self.df, 'v\''))
 
     def closeEvent(self, event):
         self.saveSettings()
@@ -284,11 +284,11 @@ class TabMainTask2(QWidget):
         layout.addWidget(table)
 
         if self.to_be_control_local_error:
-            self.columns = ['x', 'u', 'u2i', 'u\'', 'u\'2i', 'u-u2i', 'u\'-u\'2i', 'h', 'e', 'e_v', 'e_v\'',
+            self.columns = ['x', 'v', 'v2i', 'v\'', 'v\'2i', 'v-v2i', 'v\'-v\'2i', 'h', 'e', 'e_v', 'e_v\'',
                             'c1', 'c2']  # Замена 'E' на 'e'
             self.data = self.df.values.tolist()[1:]  # Данные для таблицы
         else:
-            self.columns = ['x', 'u', 'u\'']
+            self.columns = ['x', 'v', 'v\'']
             
             self.data = self.df.values.tolist()[1:]  # Данные для таблицы
 
@@ -350,13 +350,13 @@ class TabMainTask2(QWidget):
             current_dir = os.path.dirname(current_file_path)
             current_dir = os.path.join(current_dir, "..") 
             current_dir = os.path.join(current_dir, "output")
-            file_path = os.path.join(current_dir, 'output_2.csv')
+            file_path = os.path.join(current_dir, 'output_ksr11.csv')
             if to_be_control_local_error:
                 self.df = pd.read_csv(file_path, delimiter=";", header=None,
-                                 names=['x', 'u', 'u2i', 'u\'', 'u\'2i', 'u-u2i', 'u\'-u\'2i', 'h', 'e', 'e_v', 'e_v\'',
+                                 names=['x', 'v', 'v2i', 'v\'', 'v\'2i', 'v-v2i', 'v\'-v\'2i', 'h', 'e', 'e_v', 'e_v\'',
                             'c1', 'c2'])  # Замена 'E' на 'e'
             else:
-                self.df = pd.read_csv(file_path, delimiter=";", header=None, names=['x', 'u', 'u\''])
+                self.df = pd.read_csv(file_path, delimiter=";", header=None, names=['x', 'v', 'v\''])
         except Exception as e:
             self.show_error(f"Ошибка во время загрузки: {e}")
 
@@ -383,10 +383,10 @@ class TabMainTask2(QWidget):
         try:
             if control_local_error:
                 self.df = pd.read_csv(file_path, delimiter=";", low_memory=False, header=None,
-                                       names=['x', 'u', 'u2i', 'u\'', 'u\'2i', 'u-u2i', 'u\'-u\'2i', 'h', 'e', 'e_v',
+                                       names=['x', 'v', 'v2i', 'v\'', 'v\'2i', 'v-v2i', 'v\'-v\'2i', 'h', 'e', 'e_v',
                                         'e_v\'', 'c1', 'c2'])  # Замена 'E' на 'e'
             else:
-                self.df = pd.read_csv(file_path, delimiter=";", header=None, low_memory=False, names=['x', 'u', 'u\''])
+                self.df = pd.read_csv(file_path, delimiter=";", header=None, low_memory=False, names=['x', 'v', 'v\''])
         except Exception as e:
             self.show_error(f"Ошибка при загрузке DataFrame: {e}")
 
