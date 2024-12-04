@@ -285,10 +285,10 @@ class TabMainTask2(QWidget):
 
         if self.to_be_control_local_error:
             self.columns = ['x', 'v', 'v2i', 'v\'', 'v\'2i', 'v-v2i', 'v\'-v\'2i', 'h', 'e', 'e_v', 'e_v\'',
-                            'c1', 'c2']  # Замена 'E' на 'e'
+                            'c1', 'c2', 'currentLength']  # Замена 'E' на 'e'
             self.data = self.df.values.tolist()[1:]  # Данные для таблицы
         else:
-            self.columns = ['x', 'v', 'v\'']
+            self.columns = ['x', 'v', 'v\'', 'currentLength']
             
             self.data = self.df.values.tolist()[1:]  # Данные для таблицы
 
