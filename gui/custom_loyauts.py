@@ -216,9 +216,9 @@ class NumericalIntegrationParametersInput(QVBoxLayout):
         self.h0Input = FloatNumberInput('Начальный шаг')
         mainLoyaut.addLayout(self.h0Input)
         #mainLoyaut.addWidget(QLabel("Контроль локальной погрешности"))
-        self.controlLocalErrorCheckBox = QCheckBox("Контроль локальной погрешности")
-        self.controlLocalErrorCheckBox.stateChanged.connect(self.controlLocalErrorCheckBoxStateChanged)
-        self.addWidget(self.controlLocalErrorCheckBox)
+        # self.controlLocalErrorCheckBox = QCheckBox("Контроль локальной погрешности")
+        # self.controlLocalErrorCheckBox.stateChanged.connect(self.controlLocalErrorCheckBoxStateChanged)
+        # self.addWidget(self.controlLocalErrorCheckBox)
 
         self.epsilonInput = FloatNumberInput('Параметр локальной ошибки')
         mainLoyaut.addLayout(self.epsilonInput)
@@ -229,8 +229,8 @@ class NumericalIntegrationParametersInput(QVBoxLayout):
         return self.h0Input.getFloatNumber()
     def getEpsilonLocalError(self):
         return self.epsilonInput.getFloatNumber()
-    def isControlLocalError(self):
-        return self.controlLocalErrorCheckBox.isChecked()
+    # def isControlLocalError(self):
+    #     return self.controlLocalErrorCheckBox.isChecked()
     def setChecked(self, checked):
         self.controlLocalErrorCheckBox.setChecked(checked)
     
@@ -244,7 +244,7 @@ class XlimitsInput(QVBoxLayout):
         layout2 = QHBoxLayout()
         #self.startXInput = FloatNumberInput("X начальное")
         #layout2.addLayout(self.startXInput)
-        self.endXInput = FloatNumberInput("X конечное")
+        self.endXInput = FloatNumberInput("Конечная длина")
         layout2.addLayout(self.endXInput)
         self.epsilonBorderInput = FloatNumberInput("ε граничное")
         layout2.addLayout(self.epsilonBorderInput)

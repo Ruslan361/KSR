@@ -9,17 +9,15 @@
         "epsilonBorder": "1e-16"
     },
     "numericalIntegrationParameters": {
-        "h0": "0.01",
-        "controlLocalError": true,
-        "epsilon": "1e-16",
-        "to_be_control_local_error": true
+        "h0": "1e-1",
+        "epsilon": "1e-16"
     },
     "abinput": {
         "a": "1",
-        "b": "1"
+        "b": "10"
     },
-    "amountOfSteps": "1000",
-    "selectedGraph": "v`-v",
+    "amountOfSteps": "10000",
+    "selectedGraph": "x - v(x)",
     "csv_filename": "main_task_2.csv",
     "task_number": 2
 }

@@ -68,9 +68,7 @@ class MainTask2SettingsManager:
             },
             "numericalIntegrationParameters": {
                 "h0": self.ui_elements["numericalIntegrationParametersInput"].h0Input.floatNumberLineEdit.text(),
-                "controlLocalError": self.ui_elements["numericalIntegrationParametersInput"].controlLocalErrorCheckBox.isChecked(),
-                "epsilon": self.ui_elements["numericalIntegrationParametersInput"].epsilonInput.floatNumberLineEdit.text(),
-                "to_be_control_local_error": self.ui_elements["numericalIntegrationParametersInput"].isControlLocalError()
+                "epsilon": self.ui_elements["numericalIntegrationParametersInput"].epsilonInput.floatNumberLineEdit.text()
             },
             "abinput": {
                 "a": self.ui_elements["abinput"].AInput.floatNumberLineEdit.text(),
@@ -113,16 +111,14 @@ class MainTask2SettingsManager:
                 self.ui_elements["xlimitsInput"].endXInput.floatNumberLineEdit.setText(settings["xlimits"]["endX"])
                 self.ui_elements["xlimitsInput"].epsilonBorderInput.floatNumberLineEdit.setText(settings["xlimits"]["epsilonBorder"])
                 self.ui_elements["numericalIntegrationParametersInput"].h0Input.floatNumberLineEdit.setText(settings["numericalIntegrationParameters"]["h0"])
-                self.ui_elements["numericalIntegrationParametersInput"].controlLocalErrorCheckBox.setChecked(settings["numericalIntegrationParameters"]["controlLocalError"])
                 self.ui_elements["numericalIntegrationParametersInput"].epsilonInput.floatNumberLineEdit.setText(settings["numericalIntegrationParameters"]["epsilon"])
                 self.ui_elements["abinput"].AInput.floatNumberLineEdit.setText(settings["abinput"]["a"])
                 self.ui_elements["abinput"].BInput.floatNumberLineEdit.setText(settings["abinput"]["b"])
                 self.ui_elements["amountOfStepsInput"].intNumberLineEdit.setText(settings["amountOfSteps"])
-                self.ui_elements["numericalIntegrationParametersInput"].setChecked(settings["numericalIntegrationParameters"]["to_be_control_local_error"])
                 self.ui_elements["graphComboBox"].setCurrentText(settings["selectedGraph"])
 
                 csv_filename = os.path.join(os.path.dirname(filename), settings["csv_filename"])
-                self.ui_elements["parent"].load_dataframe(csv_filename, self.ui_elements["numericalIntegrationParametersInput"].isControlLocalError())
+                self.ui_elements["parent"].load_dataframe(csv_filename)
                 self.ui_elements["parent"].refreshPlot()  # Обновление графика после загрузки
 
                 print(f"Настройки загружены из файла {filename}")
@@ -138,7 +134,6 @@ class TabMainTask2(QWidget):
         self.RK = l1_2()  # Инициализируем l1_2
         self.settings_file = "main_task_2"  # Базовое имя файла без расширения
         self.df = None  # Переменная для хранения DataFrame
-        self.to_be_control_local_error = False # Флаг, указывающий, нужно ли контролировать локальную погрешность
 
         # UI элементы
         #testTaskLayout = LatexRendererLayout()
@@ -214,7 +209,7 @@ class TabMainTask2(QWidget):
         # ... (код для получения параметров из UI)
         if self._validate_input():
             self._perform_calculation()
-            self.tryLoadResult(self.to_be_control_local_error)
+            self.tryLoadResult()
             self.refreshPlot()
 
     def _validate_input(self):
@@ -253,14 +248,12 @@ class TabMainTask2(QWidget):
         amountOfSteps = self.amountOfStepsInput.getIntNumber()
         h0 = self.numericalIntegrationParametersInput.getStartStep()
         local_error = self.numericalIntegrationParametersInput.getEpsilonLocalError()
-        self.to_be_control_local_error = self.numericalIntegrationParametersInput.isControlLocalError()
 
         try:
-            if self.to_be_control_local_error:
-                self.RK.rk4_adaptive(x0, u_x0, du_x0, x_end, h0, a, b, amountOfSteps, local_error,
+            self.RK.rk4_adaptive(x0, u_x0, du_x0, x_end, h0, a, b, amountOfSteps, local_error,
                                     epsilon_border)  # Вызываем rk4_adaptive из l1_2
-            else:
-                self.RK.rk_4(x0, u_x0, du_x0, h0, x_end, a, b, amountOfSteps)  # Вызываем rk_4 из l1_2
+            #else:
+                #self.RK.rk_4(x0, u_x0, du_x0, h0, x_end, a, b, amountOfSteps)  # Вызываем rk_4 из l1_2
         except Exception as e:
             self.show_error(f"Ошибка во время вычислений: {e}")
 
@@ -283,14 +276,9 @@ class TabMainTask2(QWidget):
         table = QTableWidget()
         layout.addWidget(table)
 
-        if self.to_be_control_local_error:
-            self.columns = ['x', 'v', 'v2i', 'v\'', 'v\'2i', 'v-v2i', 'v\'-v\'2i', 'h', 'e', 'e_v', 'e_v\'',
-                            'c1', 'c2', 'currentLength']  # Замена 'E' на 'e'
-            self.data = self.df.values.tolist()[1:]  # Данные для таблицы
-        else:
-            self.columns = ['x', 'v', 'v\'', 'currentLength']
-            
-            self.data = self.df.values.tolist()[1:]  # Данные для таблицы
+        self.columns = ['x', 'v', 'v2i', 'v\'', 'v\'2i', 'v-v2i', 'v\'-v\'2i', 'h', 'e', 'e_v', 'e_v\'',
+                        'c1', 'c2', 'currentLength']  # Замена 'E' на 'e'
+        self.data = self.df.values.tolist()[1:]  # Данные для таблицы
 
         table.setColumnCount(len(self.columns))
         table.setRowCount(len(self.data))
@@ -317,26 +305,25 @@ class TabMainTask2(QWidget):
             difference_between_the_right_border_and_the_last_calculated_point = abs(
                 x[l - 1] - self.xlimitsInput.getEndX())
             report += f'разница между правой границей и последней вычисленной точки: {difference_between_the_right_border_and_the_last_calculated_point}\n'
-            if self.to_be_control_local_error:
-                e = self.getColumnValues(self.df, 'e')  # Замена 'E' на 'e'
-                maxError = max(e)  # Замена 'E' на 'e'
-                max_error_index = e.index(maxError)
-                report += f'Максимальное значение ОЛП {maxError} при x = {x[max_error_index]}\n'
-                doubling = self.getColumnValues(self.df, 'c2')
-                countOfDoubling = sum(doubling)
-                report += f'Количество удвоений {countOfDoubling}\n'
-                doubling = self.getColumnValues(self.df, 'c1')
-                countOfDoubling = sum(doubling)
-                report += f'Количество делений {countOfDoubling}\n'
-                h = self.getColumnValues(self.df, 'h')
-                maxStep = max(h)
-                minStep = min(h)
-                xMinStep = h.index(minStep)
-                xMinStep = x[xMinStep]
-                xMaxStep = h.index(maxStep)
-                xMaxStep = x[xMaxStep]
-                report += f'максимальный шаг {maxStep} при x={xMaxStep}\n'
-                report += f'Минимальный шаг {minStep} при x={xMinStep}\n'
+            e = self.getColumnValues(self.df, 'e')  # Замена 'E' на 'e'
+            maxError = max(e)  # Замена 'E' на 'e'
+            max_error_index = e.index(maxError)
+            report += f'Максимальное значение ОЛП {maxError} при x = {x[max_error_index]}\n'
+            doubling = self.getColumnValues(self.df, 'c2')
+            countOfDoubling = sum(doubling)
+            report += f'Количество удвоений {countOfDoubling}\n'
+            doubling = self.getColumnValues(self.df, 'c1')
+            countOfDoubling = sum(doubling)
+            report += f'Количество делений {countOfDoubling}\n'
+            h = self.getColumnValues(self.df, 'h')
+            maxStep = max(h)
+            minStep = min(h)
+            xMinStep = h.index(minStep)
+            xMinStep = x[xMinStep]
+            xMaxStep = h.index(maxStep)
+            xMaxStep = x[xMaxStep]
+            report += f'максимальный шаг {maxStep} при x={xMaxStep}\n'
+            report += f'Минимальный шаг {minStep} при x={xMinStep}\n'
             window = NewWindow('Справка', report)
             window.show()
             window.exec()
@@ -344,19 +331,17 @@ class TabMainTask2(QWidget):
         except Exception as e:
             self.show_error(f"Ошибка во время анализа: {e}")
 
-    def tryLoadResult(self, to_be_control_local_error):
+    def tryLoadResult(self):
         try:
             current_file_path = os.path.abspath(__file__)
             current_dir = os.path.dirname(current_file_path)
             current_dir = os.path.join(current_dir, "..") 
             current_dir = os.path.join(current_dir, "output")
             file_path = os.path.join(current_dir, 'output_ksr11.csv')
-            if to_be_control_local_error:
-                self.df = pd.read_csv(file_path, delimiter=";", header=None,
+            self.df = pd.read_csv(file_path, delimiter=";", header=None,
                                  names=['x', 'v', 'v2i', 'v\'', 'v\'2i', 'v-v2i', 'v\'-v\'2i', 'h', 'e', 'e_v', 'e_v\'',
-                            'c1', 'c2'])  # Замена 'E' на 'e'
-            else:
-                self.df = pd.read_csv(file_path, delimiter=";", header=None, names=['x', 'v', 'v\''])
+                            'c1', 'c2', 'currentLength'])  # Замена 'E' на 'e'
+            
         except Exception as e:
             self.show_error(f"Ошибка во время загрузки: {e}")
 
@@ -371,9 +356,8 @@ class TabMainTask2(QWidget):
 
     def loadSettings(self):
         self.settings_manager.load_settings()
-        self.to_be_control_local_error= self.numericalIntegrationParametersInput.isControlLocalError()
 
-    def load_dataframe(self, csv_filename, control_local_error):
+    def load_dataframe(self, csv_filename):
         """Загружает DataFrame из CSV файла в зависимости от control_local_error."""
         current_file_path = os.path.abspath(__file__)
         current_dir = os.path.dirname(current_file_path)
@@ -381,12 +365,9 @@ class TabMainTask2(QWidget):
         current_dir = os.path.join(current_dir, "output")
         file_path = os.path.join(current_dir, csv_filename)
         try:
-            if control_local_error:
-                self.df = pd.read_csv(file_path, delimiter=";", low_memory=False, header=None,
-                                       names=['x', 'v', 'v2i', 'v\'', 'v\'2i', 'v-v2i', 'v\'-v\'2i', 'h', 'e', 'e_v',
-                                        'e_v\'', 'c1', 'c2'])  # Замена 'E' на 'e'
-            else:
-                self.df = pd.read_csv(file_path, delimiter=";", header=None, low_memory=False, names=['x', 'v', 'v\''])
+            self.df = pd.read_csv(file_path, delimiter=";", low_memory=False, header=None,
+                                    names=['x', 'v', 'v2i', 'v\'', 'v\'2i', 'v-v2i', 'v\'-v\'2i', 'h', 'e', 'e_v',
+                                    'e_v\'', 'c1', 'c2', 'currentLength'])  # Замена 'E' на 'e'
         except Exception as e:
             self.show_error(f"Ошибка при загрузке DataFrame: {e}")
 
