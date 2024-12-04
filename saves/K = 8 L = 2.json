@@ -1,0 +1,23 @@
+{
+    "initialConditions": {
+        "X0": "0",
+        "UX0": "0",
+        "DUX0": "0"
+    },
+    "xlimits": {
+        "endX": "1",
+        "epsilonBorder": "1e-15"
+    },
+    "numericalIntegrationParameters": {
+        "h0": "1e-1",
+        "epsilon": "1e-16"
+    },
+    "abinput": {
+        "a": "8",
+        "b": "2"
+    },
+    "amountOfSteps": "1000",
+    "selectedGraph": "x - v(x)",
+    "csv_filename": "K = 8 L = 2.csv",
+    "task_number": 2
+}
