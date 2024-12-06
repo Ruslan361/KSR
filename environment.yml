@@ -1,4 +1,4 @@
-name: NM_lab1
+name: KSR11
 channels:
   - anaconda
   - conda-forge
