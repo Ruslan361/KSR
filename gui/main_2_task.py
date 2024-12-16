@@ -218,6 +218,10 @@ class TabMainTask2(QWidget):
         amount_of_steps = self.amountOfStepsInput.getIntNumber()
         h0 = self.numericalIntegrationParametersInput.getStartStep()
         local_error = self.numericalIntegrationParametersInput.getEpsilonLocalError()
+        l = self.abinput.getB()
+        if l < x_end:
+            self.show_error("Ошибка: Конечная длина вычисления должна быть меньше общей длины стержня.")
+            return False
 
         if x_end <= x0:
             self.show_error("Ошибка: Конечное значение X должно быть больше начального.")
@@ -301,19 +305,20 @@ class TabMainTask2(QWidget):
             amountOfIterations = len(self.df['x']) - 1
             report += f"Количество итераций: {amountOfIterations} \n"
             x = self.getColumnValues(self.df, 'x')
+            currentLength = self.getColumnValues(self.df, 'currentLength')
             l = len(x)
             difference_between_the_right_border_and_the_last_calculated_point = abs(
-                x[l - 1] - self.xlimitsInput.getEndX())
+                currentLength[l - 1] - self.xlimitsInput.getEndX())
             report += f'разница между правой границей и последней вычисленной точки: {difference_between_the_right_border_and_the_last_calculated_point}\n'
             e = self.getColumnValues(self.df, 'e')  # Замена 'E' на 'e'
             maxError = max(e)  # Замена 'E' на 'e'
             max_error_index = e.index(maxError)
             report += f'Максимальное значение ОЛП {maxError} при x = {x[max_error_index]}\n'
             doubling = self.getColumnValues(self.df, 'c2')
-            countOfDoubling = sum(doubling)
+            countOfDoubling = max(doubling)
             report += f'Количество удвоений {countOfDoubling}\n'
             doubling = self.getColumnValues(self.df, 'c1')
-            countOfDoubling = sum(doubling)
+            countOfDoubling = max(doubling)
             report += f'Количество делений {countOfDoubling}\n'
             h = self.getColumnValues(self.df, 'h')
             maxStep = max(h)

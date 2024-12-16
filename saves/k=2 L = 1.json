@@ -16,7 +16,7 @@
         "a": "2",
         "b": "1"
     },
-    "amountOfSteps": "1000",
+    "amountOfSteps": "10000",
     "selectedGraph": "x - v(x)",
     "csv_filename": "k=2 L = 1.csv",
     "task_number": 2

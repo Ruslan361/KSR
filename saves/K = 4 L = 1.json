@@ -16,8 +16,8 @@
         "a": "4",
         "b": "1"
     },
-    "amountOfSteps": "1000",
+    "amountOfSteps": "10000",
     "selectedGraph": "x - v(x)",
-    "csv_filename": "K = 4 L = 1json.csv",
+    "csv_filename": "K = 4 L = 1.csv",
     "task_number": 2
 }

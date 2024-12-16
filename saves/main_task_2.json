@@ -1,7 +1,7 @@
 {
     "initialConditions": {
-        "X0": "0",
-        "UX0": "0",
+        "X0": "0.5",
+        "UX0": "0.5",
         "DUX0": "0"
     },
     "xlimits": {

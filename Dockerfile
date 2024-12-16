@@ -22,7 +22,7 @@ RUN conda env create -f /tmp/environment.yml -y
 RUN conda clean -a -y
 
 # Настраиваем PATH для использования среды по умолчанию
-ENV PATH /opt/conda/envs/NM_lab1/bin:$PATH
+ENV PATH /opt/conda/envs/KSR11/bin:$PATH
 # Замените your_env_name на название среды из вашего environment.yml файла
 
 # Создайте каталог для пароля VNC

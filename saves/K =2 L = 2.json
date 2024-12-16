@@ -5,7 +5,7 @@
         "DUX0": "0"
     },
     "xlimits": {
-        "endX": "1",
+        "endX": "2",
         "epsilonBorder": "1e-15"
     },
     "numericalIntegrationParameters": {
@@ -13,11 +13,11 @@
         "epsilon": "1e-16"
     },
     "abinput": {
-        "a": "8",
+        "a": "2",
         "b": "2"
     },
-    "amountOfSteps": "1000",
+    "amountOfSteps": "10000",
     "selectedGraph": "x - v(x)",
-    "csv_filename": "K = 8 L = 2.csv",
+    "csv_filename": "K =2 L = 2.csv",
     "task_number": 2
 }

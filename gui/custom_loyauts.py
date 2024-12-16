@@ -149,7 +149,7 @@ class FloatNumberInput(QHBoxLayout):
         self.addWidget(self.floatNumberLineEdit)
     def getFloatNumber(self):
         FloatNumberString = self.floatNumberLineEdit.text()
-        return float(FloatNumberString)
+        return float(FloatNumberString.replace(',', '.'))
     def setReadOnly(self, state):
         self.floatNumberLineEdit.setReadOnly(state)
     
@@ -174,14 +174,14 @@ class IntNumberInput(QHBoxLayout):
 class StartConditions2(QVBoxLayout):
     def __init__(self):
         super().__init__()
-        self.addWidget(QLabel("Начальные условия"))
+        #self.addWidget(QLabel("Начальные условия"))
         initialConditionsLoyaut = QHBoxLayout()
         self.X0Input = FloatNumberInput('X0')
-        initialConditionsLoyaut.addLayout(self.X0Input)
+        #initialConditionsLoyaut.addLayout(self.X0Input)
         self.UX0Input = FloatNumberInput('U(X0)')
-        initialConditionsLoyaut.addLayout(self.UX0Input)
+        #initialConditionsLoyaut.addLayout(self.UX0Input)
         self.DUX0Input = FloatNumberInput('U`(X0)')
-        initialConditionsLoyaut.addLayout(self.DUX0Input)
+        #initialConditionsLoyaut.addLayout(self.DUX0Input)
         self.addLayout(initialConditionsLoyaut)
 
     def getX0(self):
