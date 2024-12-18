@@ -37,7 +37,7 @@ class MainWindow(QMainWindow):
         # Добавляем вкладки в QTabWidget
         #self.tab_widget.addTab(tab1, "Тестовая задача")
         #self.tab_widget.addTab(tab2, "Основная задача 1")
-        self.tab_widget.addTab(tab3, "КСР")
+        self.tab_widget.addTab(tab3, "Петров Олег, КСР 11, 6 вариант")
 
         # Можно добавить иконки к вкладкам, если нужно:
         # self.tab_widget.setTabIcon(0, QIcon('icon1.png'))

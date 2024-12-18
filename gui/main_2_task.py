@@ -158,7 +158,7 @@ class TabMainTask2(QWidget):
         self.mainLayout.addWidget(calculatePushButton)
         calculatePushButton.clicked.connect(self.calculateClick)
 
-        self.amountOfStepsInput = IntNumberInput("Количество шагов")
+        self.amountOfStepsInput = IntNumberInput("Максимальное количество шагов")
         self.mainLayout.addLayout(self.amountOfStepsInput)
 
         self.graph = GraphLayout()
@@ -280,7 +280,7 @@ class TabMainTask2(QWidget):
         table = QTableWidget()
         layout.addWidget(table)
 
-        self.columns = ['x', 'v', 'v2i', 'v\'', 'v\'2i', 'v-v2i', 'v\'-v\'2i', 'h', 'e', 'e_v', 'e_v\'',
+        self.columns = ['x', 'v', 'v2i', 'v\'', 'v\'2i', 'v-v2i', 'v\'-v\'2i', 'h', 'Общая ОЛП', 'ОЛП для компоненты V', 'ОЛП для компоненты V`',
                         'c1', 'c2', 'currentLength']  # Замена 'E' на 'e'
         self.data = self.df.values.tolist()[1:]  # Данные для таблицы
 

@@ -220,7 +220,7 @@ class NumericalIntegrationParametersInput(QVBoxLayout):
         # self.controlLocalErrorCheckBox.stateChanged.connect(self.controlLocalErrorCheckBoxStateChanged)
         # self.addWidget(self.controlLocalErrorCheckBox)
 
-        self.epsilonInput = FloatNumberInput('Параметр локальной ошибки')
+        self.epsilonInput = FloatNumberInput('Параметр контроля локальной погрешности')
         mainLoyaut.addLayout(self.epsilonInput)
         self.addLayout(mainLoyaut)
     def controlLocalErrorCheckBoxStateChanged(self):
