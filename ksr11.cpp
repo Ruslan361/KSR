@@ -4,6 +4,8 @@
 #include <string>
 #include <limits>
 #include <filesystem>
+#include <iomanip>
+#include <iostream>
 
 #include <cfloat> // Для DBL_MAX
 
@@ -118,7 +120,11 @@ int rungeKuttaAdaptive(double x0, double y10, double y20, double h0, double maxL
     double currentLength = 0.0; // Текущая длина стержня, для которой уже проведены рассчеты
     bool is_currentLength_more_maxLength = false;
 
+    int precision = -std::log10(edge); 
+    if (precision < 6) precision = 6; 
+
     std::ofstream output(OUT_PATH);
+    //output << std::fixed << std::setprecision(precision);
     output << "xi;vi;vi2;v'i;v'i2;vi-vi2;v'i-v'i2;hi;E;E_v;E_v';c1;c2;currentLength_i" << std::endl;
 
 
@@ -163,7 +169,7 @@ int rungeKuttaAdaptive(double x0, double y10, double y20, double h0, double maxL
             }   
 
             c2++;
-            output << x << ";" << y1 << ";" << y1_half << ";" << y2 << ";" << y2_half << ";" << y1 - y1_half << ";" << y2-y2_half << ";" << h << ";" << error * pow(2, p) << ";" << s1 * pow(2, p) << ";" << s2 * pow(2, p) << ";" << c1 << ";" << c2 << ";" << currentLength << std::endl;
+            output << x << ";" << y1 << ";" << y1_half << ";" << y2 << ";" << y2_half << ";" << y1 - y1_half << ";" << y2-y2_half << ";" << h << ";" << error * pow(2, p) << ";" << s1 * pow(2, p) << ";" << s2 * pow(2, p) << ";" << c1 << ";" << c2 << ";" << std::setprecision(precision) << currentLength << std::endl;
             h *= 2;
         } else  {
             while (error > tolerance) {
@@ -205,7 +211,7 @@ int rungeKuttaAdaptive(double x0, double y10, double y20, double h0, double maxL
                 is_currentLength_more_maxLength = true;
                 break; // Выходим из цикла, если достигли максимальной длины
             } 
-            output << x << ";" << y1 << ";" << y1_half << ";" << y2 << ";" << y2_half << ";" << y1 - y1_half << ";" << y2-y2_half << ";" << h << ";" << error * pow(2, p) << ";" << s1 * pow(2, p) << ";" << s2 * pow(2, p) << ";" << c1 << ";" << c2 << ";" << currentLength << "\n";
+            output << x << ";" << y1 << ";" << y1_half << ";" << y2 << ";" << y2_half << ";" << y1 - y1_half << ";" << y2-y2_half << ";" << h << ";" << error * pow(2, p) << ";" << s1 * pow(2, p) << ";" << s2 * pow(2, p) << ";" << c1 << ";" << c2 << ";" << std::setprecision(precision) << currentLength << "\n";
         }
         
 
@@ -255,11 +261,11 @@ int rungeKuttaAdaptive(double x0, double y10, double y20, double h0, double maxL
             } 
             else if (maxLength - currentLength > edge){         //Сохраняем точку и приближаемся к границе без уменьшения шага
                 should_decrease_step = false;
-                output << x << ";" << y1 << ";" << y1_half << ";" << y2 << ";" << y2_half << ";" << y1 - y1_half << ";" << y2-y2_half << ";" << h << ";" << error * pow(2, p) << ";" << s1 * pow(2, p) << ";" << s2 * pow(2, p) << ";" << c1 << ";" << c2 << ";" << currentLength << std::endl;
+                output << x << ";" << y1 << ";" << y1_half << ";" << y2 << ";" << y2_half << ";" << y1 - y1_half << ";" << y2-y2_half << ";" << h << ";" << error * pow(2, p) << ";" << s1 * pow(2, p) << ";" << s2 * pow(2, p) << ";" << c1 << ";" << c2 << ";" << std::setprecision(precision) << currentLength << std::endl;
                 continue;         
             }
             else {
-                output << x << ";" << y1 << ";" << y1_half << ";" << y2 << ";" << y2_half << ";" << y1 - y1_half << ";" << y2-y2_half << ";" << h << ";" << error * pow(2, p) << ";" << s1 * pow(2, p) << ";" << s2 * pow(2, p) << ";" << c1 << ";" << c2 << ";" << currentLength << std::endl;
+                output << x << ";" << y1 << ";" << y1_half << ";" << y2 << ";" << y2_half << ";" << y1 - y1_half << ";" << y2-y2_half << ";" << h << ";" << error * pow(2, p) << ";" << s1 * pow(2, p) << ";" << s2 * pow(2, p) << ";" << c1 << ";" << c2 << ";" << std::setprecision(precision) << currentLength << std::endl;
                 break;
             }
         }
@@ -284,7 +290,7 @@ int main() {
     double L = 1.0;
     int maxSteps = 10000;
     double tolerance = 1e-7;
-    double edge = 1e-6;
+    double edge = 1e-12;
 
 
     //Вызов rungeKuttaAdaptive с данными переменными

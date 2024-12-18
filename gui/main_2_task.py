@@ -262,6 +262,19 @@ class TabMainTask2(QWidget):
             self.show_error(f"Ошибка во время вычислений: {e}")
 
     def refreshPlot(self):
+        # x0 = self.ui.initial_conditions.getX0()
+        # u_x0 = self.ui.initial_conditions.getUX0()
+        # du_x0 = self.ui.initial_conditions.getDUX0()
+        x0 = 0
+        u_x0 = 0
+        du_x0 = 0
+        if self.df is not None:
+            X = self.getColumnValues(self.df, 'x')
+            X.insert(0, x0)
+            V = self.getColumnValues(self.df, 'v')
+            V.insert(0, u_x0)
+            dV = self.getColumnValues(self.df, 'v\'')
+            dV.insert(0, du_x0)
         if self.df is not None:
             self.plotter.plot(self.getColumnValues(self.df, 'x'), self.getColumnValues(self.df, 'v'), self.getColumnValues(self.df, 'v\''))
 
@@ -283,6 +296,7 @@ class TabMainTask2(QWidget):
         self.columns = ['x', 'v', 'v2i', 'v\'', 'v\'2i', 'v-v2i', 'v\'-v\'2i', 'h', 'Общая ОЛП', 'ОЛП для компоненты V', 'ОЛП для компоненты V`',
                         'c1', 'c2', 'currentLength']  # Замена 'E' на 'e'
         self.data = self.df.values.tolist()[1:]  # Данные для таблицы
+        self.data.insert(0, [0, 0, "---", 0, "---", "---", "---", "---", "---", "---", "---", 0, 0, 0])
 
         table.setColumnCount(len(self.columns))
         table.setRowCount(len(self.data))
@@ -305,11 +319,16 @@ class TabMainTask2(QWidget):
             amountOfIterations = len(self.df['x']) - 1
             report += f"Количество итераций: {amountOfIterations} \n"
             x = self.getColumnValues(self.df, 'x')
+            v = self.getColumnValues(self.df, 'v')
+            dv = self.getColumnValues(self.df, 'v\'')
             currentLength = self.getColumnValues(self.df, 'currentLength')
             l = len(x)
             difference_between_the_right_border_and_the_last_calculated_point = abs(
                 currentLength[l - 1] - self.xlimitsInput.getEndX())
-            report += f'разница между правой границей и последней вычисленной точки: {difference_between_the_right_border_and_the_last_calculated_point}\n'
+            report += f'Разница между правой границей и последней вычисленной точкой: {difference_between_the_right_border_and_the_last_calculated_point}\n'
+            report += f'Начальная и последняя точка численной траектории\n'
+            report += f'x0 = 0 v0 = 0 v\'0 = 0\n'
+            report += f'xn = {x[l - 1]} vn = {v[l - 1]} v\'n = {dv[l - 1]}\n'
             e = self.getColumnValues(self.df, 'e')  # Замена 'E' на 'e'
             maxError = max(e)  # Замена 'E' на 'e'
             max_error_index = e.index(maxError)

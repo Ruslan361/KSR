@@ -6,10 +6,10 @@
     },
     "xlimits": {
         "endX": "1",
-        "epsilonBorder": "1e-6"
+        "epsilonBorder": "1e-5"
     },
     "numericalIntegrationParameters": {
-        "h0": "1e-1",
+        "h0": "0,001",
         "epsilon": "1e-8"
     },
     "abinput": {
