@@ -293,10 +293,11 @@ class TabMainTask2(QWidget):
         table = QTableWidget()
         layout.addWidget(table)
 
-        self.columns = ['x', 'v', 'v2i', 'v\'', 'v\'2i', 'v-v2i', 'v\'-v\'2i', 'h', 'Общая ОЛП', 'ОЛП для компоненты V', 'ОЛП для компоненты V`',
-                        'Деление шага', 'Удовение шага', 'Просчитанная длина']  # Замена 'E' на 'e'
+        self.columns = ['xi', 'vi', 'v2i', 'v\'i', 'v\'2i', 'vi-v2i', 'v\'i-v\'2i', 'hi', 'Общая ОЛП', 'ОЛП для компоненты V', 'ОЛП для компоненты V`',
+                        'Деление шага', 'Удовение шага', 'Просчитанная длина']
         self.data = self.df.values.tolist()[1:]  # Данные для таблицы
-        self.data.insert(0, [0, 0, "---", 0, "---", "---", "---", "---", "---", "---", "---", 0, 0, 0])
+        h0 = self.getColumnValues(self.df, 'h')[0]
+        self.data.insert(0, [0, 0, "---", 0, "---", "---", "---", h0, "---", "---", "---", 0, 0, 0])
 
         table.setColumnCount(len(self.columns))
         table.setRowCount(len(self.data))
