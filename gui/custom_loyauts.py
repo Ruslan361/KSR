@@ -244,7 +244,7 @@ class XlimitsInput(QVBoxLayout):
         layout2 = QHBoxLayout()
         #self.startXInput = FloatNumberInput("X начальное")
         #layout2.addLayout(self.startXInput)
-        self.endXInput = FloatNumberInput("Конечная длина")
+        self.endXInput = FloatNumberInput("Конечная длина расчета")
         layout2.addLayout(self.endXInput)
         self.epsilonBorderInput = FloatNumberInput("ε граничное")
         layout2.addLayout(self.epsilonBorderInput)

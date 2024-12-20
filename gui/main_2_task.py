@@ -294,13 +294,16 @@ class TabMainTask2(QWidget):
         layout.addWidget(table)
 
         self.columns = ['x', 'v', 'v2i', 'v\'', 'v\'2i', 'v-v2i', 'v\'-v\'2i', 'h', 'Общая ОЛП', 'ОЛП для компоненты V', 'ОЛП для компоненты V`',
-                        'c1', 'c2', 'currentLength']  # Замена 'E' на 'e'
+                        'Деление шага', 'Удовение шага', 'Просчитанная длина']  # Замена 'E' на 'e'
         self.data = self.df.values.tolist()[1:]  # Данные для таблицы
         self.data.insert(0, [0, 0, "---", 0, "---", "---", "---", "---", "---", "---", "---", 0, 0, 0])
 
         table.setColumnCount(len(self.columns))
         table.setRowCount(len(self.data))
         table.setHorizontalHeaderLabels(self.columns)
+
+        for row in range(len(self.data)):
+            table.setVerticalHeaderItem(row, QTableWidgetItem(str(row)))
 
         for row, data_row in enumerate(self.data):
             for col, value in enumerate(data_row):
@@ -317,7 +320,7 @@ class TabMainTask2(QWidget):
         try:
             report = ""
             amountOfIterations = len(self.df['x']) - 1
-            report += f"Количество итераций: {amountOfIterations} \n"
+            report += f"Количество шагов метода: {amountOfIterations} \n"
             x = self.getColumnValues(self.df, 'x')
             v = self.getColumnValues(self.df, 'v')
             dv = self.getColumnValues(self.df, 'v\'')

@@ -168,8 +168,8 @@ int rungeKuttaAdaptive(double x0, double y10, double y20, double h0, double maxL
                 break; // Выходим из цикла, если достигли максимальной длины
             }   
 
-            c2++;
             output << x << ";" << y1 << ";" << y1_half << ";" << y2 << ";" << y2_half << ";" << y1 - y1_half << ";" << y2-y2_half << ";" << h << ";" << error * pow(2, p) << ";" << s1 * pow(2, p) << ";" << s2 * pow(2, p) << ";" << c1 << ";" << c2 << ";" << std::setprecision(precision) << currentLength << std::endl;
+            c2++;
             h *= 2;
         } else  {
             while (error > tolerance) {
